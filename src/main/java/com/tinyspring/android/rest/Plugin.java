@@ -1,9 +1,14 @@
 package com.tinyspring.android.rest;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
 
@@ -24,7 +29,7 @@ import com.tinyspring.springframework.util.ReflectionUtils.FieldFilter;
  */
 public class Plugin extends APlugin implements ApplicationContextAware {
 
-  private static RestProxy restProxy = new RestProxy();
+  private RestProxy restProxy;
 
   private FieldFilter fieldInjectFilter = new FieldFilter() {
 
@@ -46,7 +51,7 @@ public class Plugin extends APlugin implements ApplicationContextAware {
     public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
       log.debug("Processing rest injection for field '{}'", field.getName());
       ReflectionUtils.makeAccessible(field);
-      ReflectionUtils.setField(field, activity, restProxy.getProxy(field.getType()));
+      ReflectionUtils.setField(field, activity, getRestProxy().createProxy(field.getType()));
     }
   };
 
@@ -62,5 +67,29 @@ public class Plugin extends APlugin implements ApplicationContextAware {
   @Override
   public void onActivityCreate(Activity activity) {
     ReflectionUtils.doWithFields(activity.getClass(), new FieldInjectProcessor(activity), fieldInjectFilter);
+  }
+
+  public RestProxy getRestProxy() {
+    if (this.restProxy == null) {
+      this.loadDefaultProxy();
+    }
+    return restProxy;
+  }
+
+  public void setRestProxy(RestProxy restProxy) {
+    this.restProxy = restProxy;
+  }
+
+  protected void loadDefaultProxy() {
+    RestTemplate restTemplate = new RestTemplate();
+    List<MediaType> mediaTypes = new ArrayList<MediaType>();
+    mediaTypes.add(MediaType.APPLICATION_JSON);
+    mediaTypes.add(MediaType.APPLICATION_XHTML_XML);
+    mediaTypes.add(MediaType.TEXT_HTML);
+
+    GsonHttpMessageConverter gson = new GsonHttpMessageConverter();
+    gson.setSupportedMediaTypes(mediaTypes);
+
+    restTemplate.getMessageConverters().add(gson);
   }
 }

@@ -8,7 +8,7 @@ Automatically instantiates and injects REST clients defined by annotated interfa
 ```xml
 <dependency org="org.springframework.android" name="spring-android-rest-template" rev="1.0.1.RELEASE" transitive="false"/>
 <dependency org="com.google.code.gson" name="gson" rev="2.2.4" transitive="false"/>
-<dependency org="com.tinyspring" name="tinyspring-android-rest" rev="0.0.1" transitive="false"/>
+<dependency org="com.tinyspring" name="tinyspring-android-rest" rev="0.0.2" transitive="false"/>
 ```
 
 ```xml
@@ -25,7 +25,7 @@ Automatically instantiates and injects REST clients defined by annotated interfa
 <dependency>
 	<groupId>com.tinyspring</groupId>
 	<artifactId>tinyspring-android-rest</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 </dependency>
 ```
 
@@ -39,10 +39,10 @@ import com.tinyspring.android.rest.annotations.Get;
 public interface RestBook {
 
   @Get("http://my.rest.com/item/{isbn}/")
-  public Item getItem(String isbn);
+  public Book getBook(String isbn);
   
   @Get("http://my.rest.com/items/?filter={filter}")
-  public List<Item> getItems(String filter);
+  public Book[] getItems(String filter);
 }
 ```
 
@@ -58,7 +58,8 @@ public class MainActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ((Application) getApplicationContext()).onActivityCreate(this);
-    rest.getItems("all");
+    Book book = rest.getBook("9780752865744");
+    Book[] books = rest.getBooks("all");
   }
 }
 ```
