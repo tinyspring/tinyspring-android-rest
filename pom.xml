@@ -3,7 +3,7 @@
 
 	<groupId>com.tinyspring</groupId>
 	<artifactId>tinyspring-android-rest</artifactId>
-	<version>0.0.2</version>
+	<version>0.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>tinyspring-android-rest</name>
@@ -89,9 +89,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.tinyspring.android</groupId>
+			<groupId>com.tinyspring</groupId>
 			<artifactId>tinyspring-android</artifactId>
-			<version>0.1.0</version>
+			<version>0.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
